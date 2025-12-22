@@ -1,20 +1,52 @@
 import {
   GoogleAuthProvider,
   getAuth,
+  signInWithPopup,
+  signOut,
 } from "firebase/auth";
-class AuthLogic {//클래스 선언
-  constructor() {
-    this.auth = getAuth();//firebase developer console신청한 프로젝트 설정정보확인
-    this.googleProvider = new GoogleAuthProvider();//구글인증, 카카오인증, 깃헙인증
-    //this.kakaoProvider = new KakaoAuthProvider();
-    //this.githubProvider = new GihubAuthProvider();
+import app from "./firebase"
+export const auth = getAuth(app)
+export const googleProvider = new GoogleAuthProvider()
+/*
+  인증처리/인가처리
+  Front : React(localStorage활용 -> OAuth토큰방식)
+  Back : 서블릿(쿠키, 세션 제공)
+*/
+
+
+/*
+  구글 로그인
+*/
+export const loginGoogle = async() => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider)
+    const user = result.user
+    console.log(user)
+    window.localStorage.setItem("uid", user.uid)
+    window.localStorage.setItem("email", user.email)
+    return user
+  } catch (error){
+    console.error("구글 로그인 실패", error)
+    throw error 
   }
-  //auth반환하는 함수 선언
-  getUserAuth = () => {
-    return this.auth;
-  };
-  getGoogleAuthProvider = () => {
-    return this.googleProvider;//google
-  };
+  
 }
-export default AuthLogic; //외부 js에서 사용할 때
+/*
+  구글 로그아웃
+*/
+export const logout = async () => {
+  console.log('logout')
+  try {
+    //구글 firebase에서 로그아웃 처리를 해줌
+    await signOut(auth)
+    //로그인 성공시 localStorage 저장해둔 정보 삭제처리
+    window.localStorage.removeItem("uid");
+    window.localStorage.removeItem("email");
+  } catch (error) {
+    console.error("로그아웃", error)
+  }
+}//end of logout
+/*
+  구글 인증 상태 변화 감지
+*/
+
