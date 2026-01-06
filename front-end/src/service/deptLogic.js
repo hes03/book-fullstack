@@ -1,11 +1,24 @@
 import axios from 'axios'
+
+// 아래 코드는 요청시마다 반복되는 코드가 있다.
+// 공통 axios인스턴스화 한다면 개선할 수 있다.
+const api = axios.create({
+  baseURL: process.env.REACT_APP_SPRING_IP, //예: http://localhost:8000/
+  timeout: 10000
+})
+
 // 서블릿에게 부서 등록 요청하기
+export const deptInsertDB = async (data) => {
+  const res = await api.post('dept/deptInsert', data)
+  return res.data 
+}
+/*
 export const deptInsertDB = async (data) => {
   console.log(data)
   try {
     const res = await axios({
       method: 'post',
-      url: process.env.REACT_APP_TOMCAT_IP+'dept',
+      url: process.env.REACT_APP_SPRING_IP+'deptInsert',
       data: data
     })
     console.log(res.data)
@@ -14,13 +27,20 @@ export const deptInsertDB = async (data) => {
     console.error("부서등록 실패!!!", error)    
   }
 }//end of deptInsertDB
-
+*/
+//부서목록 조회
+export const deptListDB = async (data) => {
+  console.log(data)
+  const res = await api.get('dept/deptList', {params: data})
+  return res.data
+}//end of deptListDB
+/*
 export const deptListDB = async (data) => {
   console.log(data)
   try {
     const res = await axios({
       method: 'get',
-      url: process.env.REACT_APP_TOMCAT_IP+'dept',
+      url: process.env.REACT_APP_SPRING_IP+'deptList',
       params: data
     })
     console.log(res.data)
@@ -31,34 +51,52 @@ export const deptListDB = async (data) => {
     throw error
   }
 }//end of deptListDB
-
-export const deptListDB2 = async (data) => {
-  console.log('deptListDB2 호출')
+*/
+//부서 수정하기
+export const deptUpdateDB = async (data) => {
+  const res = await api.put('dept/deptUpdate', data)
+  return res.data //1이면 수정성공, 0이면 수정실패
+}//end of deptUpdateDB
+/*
+export const deptUpdateDB = async (data) => {
   console.log(data)
   try {
-    //만일 파라미터로 값을 넘길 때 속성이름과 객체리터럴 변수명이 같다면 생략이 가능함.
-    //const res = await axios.get(process.env.REACT_APP_TOMCAT_IP+'dept',{params})
-    const res = await axios.get(process.env.REACT_APP_TOMCAT_IP+'dept',{params:data})
+    const res = await axios({
+      method: 'put',
+      url: process.env.REACT_APP_SPRING_IP+'deptUpdate',
+      params: data
+    })
     console.log(res.data)
     return res 
   } catch (error) {
-    console.error("부서목록 가져오기 실패!!!", error)
-    //호출한 쪽에서 catch하도록 다시 던져 줄때
-    throw error
+    console.error("부서수정 실패!!!", error)
   }
-}//end of deptListDB2
+}//end of deptUpdateDB
+*/
+//부서 정보 삭제하기
+export const deptDeleteDB = async (deptno) => {
+  const dept = {
+    deptno: deptno,
+  }
+  const res = await api.delete('',{params:dept})
+  return res.data //1이면 삭제성공, 0이면 삭제실패
+}
 
-export const deptListDB3 = async (params) => {
-  console.log('deptListDB3 호출')
-  console.log(params)
+/*
+export const deptDeleteDB = async (deptno) => {
+  console.log(deptno)
   try {
-    //만일 파라미터로 값을 넘길 때 속성이름과 객체리터럴 변수명이 같다면 생략이 가능함.
-    const res = await axios.get(process.env.REACT_APP_TOMCAT_IP+'dept',{params})
+    const res = await axios({
+      method: 'delete',
+      url: process.env.REACT_APP_SPRING_IP+'deptDelete',
+      params: {'deptno':deptno}
+    })
     console.log(res.data)
     return res 
   } catch (error) {
-    console.error("부서목록 가져오기 실패!!!", error)
+    console.error("부서삭제 실패!!!", error)
     //호출한 쪽에서 catch하도록 다시 던져 줄때
     throw error
   }
-}//end of deptListDB3
+}//end of deptDeleteDB
+*/

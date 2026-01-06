@@ -6,7 +6,6 @@ const DeptPage = () => {
   return (
     <>
       <Header />
-      <h2>부서관리</h2>
       <DeptList />
       <Footer />
     </>
