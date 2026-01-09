@@ -3,6 +3,7 @@ package com.example.demo.dao;
 import java.util.List;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -13,13 +14,12 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Repository
+@RequiredArgsConstructor
 public class DeptDao {
-    @Autowired
-    private SqlSessionTemplate sqlSessionTemplate;
-    public List<Map<String, Object>> deptList(String dname) {
+    //@Autowired
+    private final SqlSessionTemplate sqlSessionTemplate;
+    public List<Map<String, Object>> deptList(DeptVO dvo) {
         List<Map<String,Object>> list = null;
-        DeptVO dvo = new DeptVO();
-        dvo.setDname(dname);
         list = sqlSessionTemplate.selectList("deptList", dvo);
         log.info(list);
         return list;
